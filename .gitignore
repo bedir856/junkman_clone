@@ -1,0 +1,33 @@
+# Xcode
+.DS_Store
+*.swp
+*.lock
+*~
+*.xcodeproj
+*.xcworkspace
+build/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.usercontent
+
+# Swift Package Manager
+.build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Data (Keep small sample, ignore large downloads if any)
+# But here we want to keep the data for the user to verify
+# So we won't ignore data/ for now, unless it's huge. 
+# The zip is 200KB, it's fine.
+
+# CoreML (We want to commit the model)
+# But usually large files are ignored. model is 30KB. Keep it.
