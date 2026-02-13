@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct JunkmanCloneApp: App {
+struct SpamOnleyiciApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

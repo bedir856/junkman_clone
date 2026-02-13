@@ -5,24 +5,24 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            ListView(title: "Blacklisted Words", listType: .blacklistedWords)
+            ListView(title: "Engellenen Kelimeler", listType: .blacklistedWords)
                 .tabItem {
                     Image(systemName: "text.bubble")
-                    Text("Junk Words")
+                    Text("Spam Kelimeler")
                 }
                 .tag(0)
             
-            ListView(title: "Whitelisted", listType: .whitelistedSenders)
+            ListView(title: "İzin Verilenler", listType: .whitelistedSenders)
                 .tabItem {
                     Image(systemName: "checkmark.shield")
-                    Text("Allowed")
+                    Text("İzinli")
                 }
                 .tag(1)
             
-            Text("Settings & About")
+            Text("Ayarlar & Hakkında")
                 .tabItem {
                     Image(systemName: "gear")
-                    Text("Settings")
+                    Text("Ayarlar")
                 }
                 .tag(2)
         }
