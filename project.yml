@@ -41,8 +41,8 @@ targets:
     entitlements:
       path: ios/Extension/MessageFilterExtension.entitlements 
     dependencies:
-      - sdk: IdentityLookup.framework
-      - sdk: CoreML.framework
+      - sdk: IdentityLookup
+      - sdk: CoreML
     info:
       path: ios/Extension/Info.plist
       properties:
