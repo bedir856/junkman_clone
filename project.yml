@@ -2,16 +2,16 @@ name: SpamOnleyici
 options:
   bundleIdPrefix: com.yourcompany
 settings:
-  MARKETING_VERSION: "1.0"
-  CURRENT_PROJECT_VERSION: "1"
-  DEVELOPMENT_TEAM: "" 
-  CODE_SIGN_STYLE: Manual 
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Manual
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
 
 targets:
   SpamOnleyici:
     type: application
     platform: iOS
-    deploymentTarget: "17.0"
     sources:
       - path: ios/App
       - path: ios/Shared
@@ -20,13 +20,13 @@ targets:
     entitlements:
       path: ios/App/SpamOnleyici.entitlements
     settings:
-      INFOPLIST_KEY_CFBundleDisplayName: "SpamÖnleyici"
-      PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.spamonleyici
+      base:
+        INFOPLIST_KEY_CFBundleDisplayName: "SpamOnleyici"
+        PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.spamonleyici
       
   MessageFilterExtension:
     type: app-extension
     platform: iOS
-    deploymentTarget: "17.0"
     sources:
       - path: ios/Extension
       - path: ios/Shared
@@ -37,7 +37,8 @@ targets:
     dependencies:
       - target: SpamOnleyici 
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.spamonleyici.extension
-      INFOPLIST_KEY_NSExtension:
-        NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.spamonleyici.extension
+        INFOPLIST_KEY_NSExtension:
+          NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
