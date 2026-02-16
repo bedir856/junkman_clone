@@ -6,6 +6,7 @@ settings:
   CURRENT_PROJECT_VERSION: "1"
   CODE_SIGN_STYLE: "Manual"
   IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+  GENERATE_INFOPLIST_FILE: "YES"
 
 targets:
   SpamOnleyici:
@@ -18,8 +19,11 @@ targets:
       - path: ml/vocab.json
     entitlements:
       path: ios/App/SpamOnleyici.entitlements
+    info:
+      path: ios/App/Info.plist
+      properties:
+        CFBundleDisplayName: "SpamOnleyici"
     settings:
-      INFOPLIST_KEY_CFBundleDisplayName: "SpamOnleyici"
       PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici"
       
   MessageFilterExtension:
@@ -34,8 +38,11 @@ targets:
       path: ios/Extension/MessageFilterExtension.entitlements
     dependencies:
       - target: SpamOnleyici 
+    info:
+      path: ios/Extension/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici.extension"
-      INFOPLIST_KEY_NSExtension:
-        NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
