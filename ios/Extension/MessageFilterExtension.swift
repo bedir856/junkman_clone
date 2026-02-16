@@ -6,7 +6,7 @@ class MessageFilterExtension: ILMessageFilterExtension {
     
     // MARK: - ILMessageFilterExtension
 
-    override func handle(_ queryRequest: ILMessageFilterQueryRequest, context: ILMessageFilterExtensionContext, completion: @escaping (ILMessageFilterQueryResponse) -> Void) {
+    func handle(_ queryRequest: ILMessageFilterQueryRequest, context: ILMessageFilterExtensionContext, completion: @escaping (ILMessageFilterQueryResponse) -> Void) {
         let action = self.offlineAction(for: queryRequest)
         let response = ILMessageFilterQueryResponse()
         response.action = action
