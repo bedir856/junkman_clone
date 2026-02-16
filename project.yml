@@ -14,6 +14,7 @@ targets:
     platform: iOS
     sources:
       - path: ios/App
+      - path: ios/App/DataManagerWrapper.swift
       - path: ios/Shared
       - path: ml/SpamClassifier.mlmodel
       - path: ml/vocab.json
@@ -39,6 +40,8 @@ targets:
       - path: ml/vocab.json
     entitlements:
       path: ios/Extension/MessageFilterExtension.entitlements 
+    dependencies:
+      - framework: IdentityLookup.framework
     info:
       path: ios/Extension/Info.plist
       properties:
