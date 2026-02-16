@@ -31,7 +31,26 @@ jobs:
           # Now we can actually build because xcodegen created the project
           xcodebuild -project SpamOnleyici.xcodeproj -scheme SpamOnleyici -destination 'platform=iOS Simulator,name=iPhone 16' build
 
-      - name: Run Tests
+      - name: Build and Archive (Real Device)
         run: |
-          # xcodebuild test -project JunkmanClone.xcodeproj -scheme JunkmanClone -destination 'platform=iOS Simulator,name=iPhone 15'
-          echo "Tests passed (Simulation)"
+          # Build for ARM64 (Real Device) without signing (AltStore will sign it)
+          xcodebuild archive \
+            -project SpamOnleyici.xcodeproj \
+            -scheme SpamOnleyici \
+            -destination "generic/platform=iOS" \
+            -archivePath SpamOnleyici.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Create IPA
+        run: |
+          mkdir Payload
+          cp -r SpamOnleyici.xcarchive/Products/Applications/SpamOnleyici.app Payload/
+          zip -r SpamOnleyici.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpamOnleyici-IPA
+          path: SpamOnleyici.ipa
