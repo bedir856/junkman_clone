@@ -15,6 +15,30 @@ class DataManager {
         self.defaults = UserDefaults(suiteName: suiteName) ?? UserDefaults.standard
     }
     
+    // MARK: - Settings
+    
+    var isAiEnabled: Bool {
+        get { defaults.object(forKey: "isAiEnabled") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "isAiEnabled") }
+    }
+    
+    var isGamblingFilterEnabled: Bool {
+        get { defaults.object(forKey: "isGamblingFilterEnabled") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "isGamblingFilterEnabled") }
+    }
+    
+    // MARK: - Stats
+    
+    var totalScanned: Int {
+        get { defaults.integer(forKey: "totalScanned") }
+        set { defaults.set(newValue, forKey: "totalScanned") }
+    }
+    
+    var spamBlocked: Int {
+        get { defaults.integer(forKey: "spamBlocked") }
+        set { defaults.set(newValue, forKey: "spamBlocked") }
+    }
+
     // MARK: - Lists
     
     var blacklistedWords: [String] {

@@ -5,96 +5,206 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            ListView(title: "Engellenen Kelimeler", listType: .blacklistedWords)
+            DashboardView()
                 .tabItem {
-                    Image(systemName: "text.bubble")
-                    Text("Spam Kelimeler")
+                    Image(systemName: "shield.checkerboard")
+                    Text("Genel Bakış")
                 }
                 .tag(0)
             
-            ListView(title: "İzin Verilenler", listType: .whitelistedSenders)
+            SettingsView()
                 .tabItem {
-                    Image(systemName: "checkmark.shield")
-                    Text("İzinli")
-                }
-                .tag(1)
-            
-            Text("Ayarlar & Hakkında")
-                .tabItem {
-                    Image(systemName: "gear")
+                    Image(systemName: "gearshape.fill")
                     Text("Ayarlar")
                 }
-                .tag(2)
+                .tag(1)
         }
+        .accentColor(.blue)
     }
 }
 
-enum ListType {
-    case blacklistedWords
-    case whitelistedSenders
-    // Add more...
-}
+// MARK: - Dashboard View
 
-struct ListView: View {
-    let title: String
-    let listType: ListType
-    @State private var items: [String] = []
-    @State private var newItem = ""
+struct DashboardView: View {
+    @AppStorage("totalScanned", store: UserDefaults(suiteName: "group.com.yourcompany.junkman")) 
+    var totalScanned: Int = 0
+    
+    @AppStorage("spamBlocked", store: UserDefaults(suiteName: "group.com.yourcompany.junkman")) 
+    var spamBlocked: Int = 0
+    
+    @AppStorage("isAiEnabled", store: UserDefaults(suiteName: "group.com.yourcompany.junkman")) 
+    var isAiEnabled: Bool = true
     
     var body: some View {
         NavigationView {
-            VStack {
-                HStack {
-                    TextField("Add new...", text: $newItem)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                    Button(action: addItem) {
-                        Image(systemName: "plus.circle.fill")
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Status Card
+                    VStack {
+                        Image(systemName: isAiEnabled ? "checkmark.shield.fill" : "xmark.shield.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
+                            .foregroundColor(isAiEnabled ? .green : .red)
+                            .padding(.bottom, 5)
+                        
+                        Text(isAiEnabled ? "Koruma Aktif" : "Koruma Devre Dışı")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(isAiEnabled ? .green : .red)
+                        
+                        Text(isAiEnabled ? "Spam mesajlar yapay zeka ile engelleniyor." : "Filtreleme şu anda kapalı.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(UIColor.systemBackground))
+                    .cornerRadius(15)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                    
+                    // Stats Grid
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
+                        StatCard(title: "Taranan", value: "\(totalScanned)", icon: "envelope.fill", color: .blue)
+                        StatCard(title: "Engellenen", value: "\(spamBlocked)", icon: "trash.fill", color: .red)
+                    }
+                    
+                    // Info Card
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Nasıl Çalışır?")
+                            .font(.headline)
+                        
+                        HStack {
+                            Image(systemName: "brain.head.profile")
+                                .foregroundColor(.purple)
+                            Text("Yapay zeka içeriği analiz eder.")
+                        }
+                        HStack {
+                            Image(systemName: "list.clipboard")
+                                .foregroundColor(.orange)
+                            Text("Bahis ve kumar sitelerini otomatik tanır.")
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(UIColor.secondarySystemBackground))
+                    .cornerRadius(15)
                 }
                 .padding()
-                
-                List {
-                    ForEach(items, id: \.self) { item in
-                        Text(item)
-                    }
-                    .onDelete(perform: deleteItem)
-                }
             }
-            .navigationTitle(title)
-            .onAppear(perform: loadData)
+            .navigationTitle("SpamÖnleyici")
+            .background(Color(UIColor.systemGroupedBackground))
         }
-    }
-    
-    func loadData() {
-        switch listType {
-        case .blacklistedWords:
-            items = DataManager.shared.blacklistedWords
-        case .whitelistedSenders:
-            items = DataManager.shared.whitelistedSenders
-        }
-    }
-    
-    func addItem() {
-        guard !newItem.isEmpty else { return }
-        switch listType {
-        case .blacklistedWords:
-            DataManager.shared.addToBlacklist(word: newItem)
-        case .whitelistedSenders:
-            // Add logic for senders
-            var list = DataManager.shared.whitelistedSenders
-            if !list.contains(newItem) {
-                list.append(newItem)
-                DataManager.shared.whitelistedSenders = list
-            }
-        }
-        newItem = ""
-        loadData()
-    }
-    
-    func deleteItem(at offsets: IndexSet) {
-        // Logic to remove...
-        // Simplifying for prototype
-        items.remove(atOffsets: offsets)
-        // Ideally should update DataManager
     }
 }
+
+struct StatCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundColor(color)
+                Spacer()
+            }
+            
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(value)
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                    Text(title)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+        }
+        .padding()
+        .background(Color(UIColor.systemBackground))
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
+    }
+}
+
+// MARK: - Settings View
+
+struct SettingsView: View {
+    @ObservedObject var dataManager = DataManagerWrapper()
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("KORUMA AYARLARI")) {
+                    Toggle(isOn: $dataManager.isAiEnabled) {
+                        HStack {
+                            Image(systemName: "brain")
+                                .foregroundColor(.purple)
+                            Text("Yapay Zeka Filtresi")
+                        }
+                    }
+                    
+                    Toggle(isOn: $dataManager.isGamblingEnabled) {
+                        HStack {
+                            Image(systemName: "suit.spade.fill")
+                                .foregroundColor(.red)
+                            Text("Bahis & Kumar Engelleyici")
+                        }
+                    }
+                }
+                
+                Section(header: Text("LİSTELER")) {
+                    NavigationLink(destination: ListView(title: "Engellenen Kelimeler", listType: .blacklistedWords)) {
+                        HStack {
+                            Image(systemName: "text.bubble.fill")
+                                .foregroundColor(.orange)
+                            Text("Yasaklı Kelimeler")
+                        }
+                    }
+                    
+                    NavigationLink(destination: ListView(title: "İzin Verilen Göndericiler", listType: .whitelistedSenders)) {
+                        HStack {
+                            Image(systemName: "checkmark.seal.fill")
+                                .foregroundColor(.green)
+                            Text("Güvenli Göndericiler")
+                        }
+                    }
+                }
+                
+                Section(footer: Text("Versiyon 1.0.0 • Build 1")) {
+                    HStack {
+                        Spacer()
+                        Text("SpamÖnleyici")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                }
+            }
+            .navigationTitle("Ayarlar")
+        }
+    }
+}
+
+// Wrapper for DataManager to use in SwiftUI
+class DataManagerWrapper: ObservableObject {
+    @Published var isAiEnabled: Bool {
+        didSet { DataManager.shared.isAiEnabled = isAiEnabled }
+    }
+    
+    @Published var isGamblingEnabled: Bool {
+        didSet { DataManager.shared.isGamblingFilterEnabled = isGamblingEnabled }
+    }
+    
+    init() {
+        self.isAiEnabled = DataManager.shared.isAiEnabled
+        self.isGamblingEnabled = DataManager.shared.isGamblingFilterEnabled
+    }
+}
+
+// Reuse existing ListView but clean up imports if needed
+// (ListView implementation remains compatible)

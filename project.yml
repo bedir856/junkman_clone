@@ -23,6 +23,9 @@ targets:
       path: ios/App/Info.plist
       properties:
         CFBundleDisplayName: "SpamOnleyici"
+    dependencies:
+      - target: MessageFilterExtension
+        embed: true
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici"
       
@@ -35,9 +38,7 @@ targets:
       - path: ml/SpamClassifier.mlmodel
       - path: ml/vocab.json
     entitlements:
-      path: ios/Extension/MessageFilterExtension.entitlements
-    dependencies:
-      - target: SpamOnleyici 
+      path: ios/Extension/MessageFilterExtension.entitlements 
     info:
       path: ios/Extension/Info.plist
       properties:

@@ -51,26 +51,43 @@ class FilterEngine {
     // MARK: - Main Logic
     
     func filterMessage(sender: String, body: String) -> ILMessageFilterAction {
+        // Increment Scan Count
+        DataManager.shared.totalScanned += 1
+        
         // 1. Check Blacklist/Whitelist (Overrides ML)
         if isWhitelisted(sender: sender, body: body) {
             return .allow
         }
         
         if isBlacklisted(sender: sender, body: body) {
+            DataManager.shared.spamBlocked += 1
             return .junk // Or .filter
         }
         
-        // 2. ML Inference
-        let prediction = predict(body: body)
-        
-        switch prediction {
-        case .junk:
-            return .filter // or .junk
-        case .allow:
-            return .allow // or .none
-        default:
-            return .none
+        // 2. Check Gambling/Betting Keywords
+        if DataManager.shared.isGamblingFilterEnabled {
+            if isGambling(body: body) {
+                DataManager.shared.spamBlocked += 1
+                return .filter // or .junk
+            }
         }
+        
+        // 3. ML Inference
+        if DataManager.shared.isAiEnabled {
+            let prediction = predict(body: body)
+            
+            switch prediction {
+            case .junk:
+                DataManager.shared.spamBlocked += 1
+                return .filter // or .junk
+            case .allow:
+                return .allow // or .none
+            default:
+                return .none
+            }
+        }
+        
+        return .none
     }
     
     // MARK: - ML Prediction
@@ -136,6 +153,20 @@ class FilterEngine {
         if dm.blacklistedSenders.contains(sender) { return true }
         for word in dm.blacklistedWords {
             if body.contains(word) { return true }
+        }
+        return false
+    }
+    
+    private func isGambling(body: String) -> Bool {
+        let lowerBody = body.lowercased()
+        let keywords = [
+            "bahis", "casino", "bet", "bonus", "freespin", "çevrimsiz", 
+            "yatırım", "deneme bonusu", "slot", "rulet", "poker", "iddaa",
+            "kazanç", "şans", "jackpot", "betting", "kumar"
+        ]
+        
+        for k in keywords {
+            if lowerBody.contains(k) { return true }
         }
         return false
     }
