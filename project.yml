@@ -67,4 +67,4 @@ targets:
         UIDeviceFamily: [1, 2]
         NSExtension:
           NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
-          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
+          NSExtensionPrincipalClass: "MessageFilterExtension"
