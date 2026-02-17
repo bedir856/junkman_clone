@@ -22,8 +22,6 @@ targets:
       path: ios/App/SpamOnleyici.entitlements
     info:
       path: ios/App/Info.plist
-      properties:
-        CFBundleDisplayName: "SpamOnleyici"
     dependencies:
       - target: MessageFilterExtension
         embed: true
@@ -45,11 +43,6 @@ targets:
       - framework: CoreML.framework
     settings:
       APPLICATION_EXTENSION_API_ONLY: "YES"
+      PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici.extension"
     info:
       path: ios/Extension/Info.plist
-      properties:
-        NSExtension:
-          NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
-          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
-    settings:
-      PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici.extension"
