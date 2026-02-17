@@ -1,7 +1,6 @@
 import IdentityLookup
 import Foundation
 
-@objc(MessageFilterExtension)
 class MessageFilterExtension: ILMessageFilterExtension {
     // Rely on default lazy loading of FilterEngine.shared in offlineAction
     

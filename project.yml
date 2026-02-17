@@ -6,7 +6,7 @@ settings:
   CURRENT_PROJECT_VERSION: "1"
   CODE_SIGN_STYLE: "Manual"
   IPHONEOS_DEPLOYMENT_TARGET: "17.0"
-  GENERATE_INFOPLIST_FILE: "NO"
+  GENERATE_INFOPLIST_FILE: "YES"
 
 targets:
   SpamOnleyici:
@@ -22,11 +22,24 @@ targets:
       path: ios/App/SpamOnleyici.entitlements
     info:
       path: ios/App/Info.plist
+      properties:
+        CFBundleDisplayName: "SpamÖnleyici"
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        colors: []
+        UIDeviceFamily: [1, 2]
+        LSRequiresIPhoneOS: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
     dependencies:
       - target: MessageFilterExtension
         embed: true
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici"
+      INFOPLIST_KEY_CFBundlePackageType: "APPL"
       
   MessageFilterExtension:
     type: app-extension
@@ -44,5 +57,14 @@ targets:
     settings:
       APPLICATION_EXTENSION_API_ONLY: "YES"
       PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici.extension"
+      INFOPLIST_KEY_CFBundlePackageType: "XPC!"
     info:
       path: ios/Extension/Info.plist
+      properties:
+        CFBundleDisplayName: "Message Filter"
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        UIDeviceFamily: [1, 2]
+        NSExtension:
+          NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).MessageFilterExtension"
