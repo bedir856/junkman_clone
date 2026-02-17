@@ -58,6 +58,12 @@ struct TestView: View {
             .onTapGesture {
                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             }
+            
+            VStack {
+                Text("Debug: Vo:\(FilterEngine.shared.debugVocabSize) Mo:\(FilterEngine.shared.debugModelStatus)")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+            }
         }
     }
     

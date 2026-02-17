@@ -170,4 +170,13 @@ class FilterEngine {
         }
         return false
     }
+    // MARK: - Debug
+    
+    var debugVocabSize: Int {
+        return vocab.count
+    }
+    
+    var debugModelStatus: String {
+        return model == nil ? "Nil" : "Loaded"
+    }
 }

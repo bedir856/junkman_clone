@@ -20,6 +20,8 @@ targets:
       - path: ml/vocab.json
     entitlements:
       path: ios/App/SpamOnleyici.entitlements
+      properties:
+        com.apple.security.application-groups: ["group.com.yourcompany.junkman"]
     info:
       path: ios/App/Info.plist
       properties:
@@ -51,6 +53,8 @@ targets:
       - path: ml/vocab.json
     entitlements:
       path: ios/Extension/MessageFilterExtension.entitlements
+      properties:
+        com.apple.security.application-groups: ["group.com.yourcompany.junkman"]
     dependencies:
       - framework: IdentityLookup.framework
       - framework: CoreML.framework
