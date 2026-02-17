@@ -69,13 +69,15 @@ struct TestView: View {
     }
     
     func runTest() {
-        // Run the actual filter engine logic
-        // We use a dummy request object or just call the logic function directly if we refactored it
-        // The FilterEngine has filterMessage(sender:body:) -> ILMessageFilterAction
-        
-        let action = FilterEngine.shared.filterMessage(sender: sender, body: messageBody)
-        self.result = action
-        self.showResult = true
+        // Run the actual filter engine logic in background to prevent UI freeze
+        DispatchQueue.global(qos: .userInitiated).async {
+            let action = FilterEngine.shared.filterMessage(sender: sender, body: messageBody)
+            
+            DispatchQueue.main.async {
+                self.result = action
+                self.showResult = true
+            }
+        }
     }
     
     func icon(for action: ILMessageFilterAction) -> String {
