@@ -26,10 +26,7 @@ jobs:
       - name: Generate Xcode Project
         run: xcodegen generate
 
-      - name: Build App (Simulator)
-        run: |
-          # Now we can actually build because xcodegen created the project
-          xcodebuild -project SpamOnleyici.xcodeproj -scheme SpamOnleyici -destination 'platform=iOS Simulator,name=iPhone 16' build
+
 
       - name: Build and Archive
         run: |
