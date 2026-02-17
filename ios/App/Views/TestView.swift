@@ -9,60 +9,61 @@ struct TestView: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text("Mesaj Simülasyonu")) {
-                    TextField("Gönderici (Örn: +905...)", text: $sender)
-                        .keyboardType(.phonePad)
-                    
-                    TextEditor(text: $messageBody)
-                        .frame(height: 100)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                        )
-                    
-                    Button(action: runTest) {
-                        HStack {
-                            Spacer()
-                            Label("Testi Başlat", systemImage: "play.fill")
-                                .font(.headline)
-                            Spacer()
-                        }
-                    }
-                    .padding(.vertical, 5)
-                    .disabled(messageBody.isEmpty)
-                }
-                
-                if showResult, let result = result {
-                    Section(header: Text("Sonuç")) {
-                        HStack {
-                            Image(systemName: icon(for: result))
-                                .foregroundColor(color(for: result))
-                                .font(.title)
-                            
-                            VStack(alignment: .leading) {
-                                Text(title(for: result))
+            VStack {
+                Form {
+                    Section(header: Text("Mesaj Simülasyonu")) {
+                        TextField("Gönderici (Örn: +905...)", text: $sender)
+                            .keyboardType(.phonePad)
+                        
+                        TextEditor(text: $messageBody)
+                            .frame(height: 100)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                            )
+                        
+                        Button(action: runTest) {
+                            HStack {
+                                Spacer()
+                                Label("Testi Başlat", systemImage: "play.fill")
                                     .font(.headline)
-                                    .foregroundColor(color(for: result))
-                                
-                                Text(description(for: result))
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                                Spacer()
                             }
                         }
-                        .padding(.vertical)
+                        .padding(.vertical, 5)
+                        .disabled(messageBody.isEmpty)
+                    }
+                    
+                    if showResult, let result = result {
+                        Section(header: Text("Sonuç")) {
+                            HStack {
+                                Image(systemName: icon(for: result))
+                                    .foregroundColor(color(for: result))
+                                    .font(.title)
+                                
+                                VStack(alignment: .leading) {
+                                    Text(title(for: result))
+                                        .font(.headline)
+                                        .foregroundColor(color(for: result))
+                                    
+                                    Text(description(for: result))
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            .padding(.vertical)
+                        }
                     }
                 }
+                
+                Text("Debug: Vo:\(FilterEngine.shared.debugVocabSize) Mo:\(FilterEngine.shared.debugModelStatus)")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+                    .padding(.bottom, 5)
             }
             .navigationTitle("Filtre Testi")
             .onTapGesture {
                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-            }
-            
-            VStack {
-                Text("Debug: Vo:\(FilterEngine.shared.debugVocabSize) Mo:\(FilterEngine.shared.debugModelStatus)")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
             }
         }
     }
