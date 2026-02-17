@@ -31,17 +31,27 @@ jobs:
           # Now we can actually build because xcodegen created the project
           xcodebuild -project SpamOnleyici.xcodeproj -scheme SpamOnleyici -destination 'platform=iOS Simulator,name=iPhone 16' build
 
-      - name: Build and Archive (Real Device)
+      - name: Build and Archive
         run: |
-          # Build for ARM64 (Real Device) without signing (AltStore will sign it)
-          xcodebuild archive \
-            -project SpamOnleyici.xcodeproj \
-            -scheme SpamOnleyici \
-            -destination "generic/platform=iOS" \
-            -archivePath SpamOnleyici.xcarchive \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+           xcodebuild -project SpamOnleyici.xcodeproj \
+             -scheme SpamOnleyici \
+             -destination "generic/platform=iOS" \
+             -archivePath $PWD/build/SpamOnleyici.xcarchive \
+             clean archive \
+             CODE_SIGN_IDENTITY="" \
+             CODE_SIGNING_REQUIRED=NO \
+             CODE_SIGNING_ALLOWED=NO
+
+      - name: Export IPA
+        run: |
+           xcodebuild -exportArchive \
+             -archivePath $PWD/build/SpamOnleyici.xcarchive \
+             -exportOptionsPlist ios/App/ExportOptions.plist \
+             -exportPath $PWD/build/output \
+             -allowProvisioningUpdates \
+             CODE_SIGN_IDENTITY="" \
+             CODE_SIGNING_REQUIRED=NO \
+             CODE_SIGNING_ALLOWED=NO
 
       - name: Create IPA
         run: |
