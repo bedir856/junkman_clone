@@ -160,9 +160,22 @@ class FilterEngine {
     private func isGambling(body: String) -> Bool {
         let lowerBody = body.lowercased()
         let keywords = [
-            "bahis", "casino", "bet", "bonus", "freespin", "çevrimsiz", 
-            "yatırım", "deneme bonusu", "slot", "rulet", "poker", "iddaa",
-            "kazanç", "şans", "jackpot", "betting", "kumar"
+            // Turkish Keywords
+            "bahis", "casino", "bet", "bonus", "freespin", "free spin",
+            "çevrimsiz", "yatırım", "deneme bonusu", "slot", "rulet",
+            "poker", "iddaa", "kazanç", "şans", "jackpot", "betting",
+            "kumar", "canlı bahis", "kaçak bahis", "bedava", "yüksek oran",
+            "hoşgeldin bonusu", "şartsız", "katla", "tıkla", "hemen üye ol",
+            "giriş yap", "promosyon", " discount", "aviator", "sweet bonanza",
+            "gates of olympus", "yasal bahis", "güvenilir bahis",
+            
+            // Site names (Common fragments)
+            "betgaranti", "vaycasino", "holiganbet", "jojobet", "betturkey",
+            "casinomega", "maxwin", "meritroyal", "tempobet", "bets10",
+            
+            // English Keywords
+            "deposit", "withdraw", "wager", "prize", "gamstop", "igaming",
+            "claim now", "sign up", "welcome offer", "exclusive deal"
         ]
         
         for k in keywords {
