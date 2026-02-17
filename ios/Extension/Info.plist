@@ -32,7 +32,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.identitylookup.message-filter</string>
 		<key>NSExtensionPrincipalClass</key>
-		<string>MessageFilterExtension.MessageFilterExtension</string>
+		<string>MessageFilterExtension</string>
 	</dict>
 </dict>
 </plist>
