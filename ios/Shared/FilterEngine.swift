@@ -12,39 +12,39 @@ enum FilterAction {
 class FilterEngine {
     static let shared = FilterEngine()
     
-    private var vocab: [String: Int] = [:]
-    private var model: SpamClassifier?
+    // Lazy load vocab and model to prevent cold-start timeout
+    private lazy var vocab: [String: Int] = loadVocab()
+    private lazy var model: SpamClassifier? = loadModel()
     
-    private init() {
-        loadVocab()
-        loadModel()
-    }
+    private init() {}
     
     // MARK: - Initialization
     
-    private func loadVocab() {
+    private func loadVocab() -> [String: Int] {
         // Load vocab.json from bundle
         guard let url = Bundle.main.url(forResource: "vocab", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let list = try? JSONDecoder().decode([String].self, from: data) else {
             print("Failed to load vocab.json")
-            return
+            return [:]
         }
         
         // Create a fast lookup map
+        var v: [String: Int] = [:]
         for (index, word) in list.enumerated() {
-            vocab[word] = index
+            v[word] = index
         }
+        return v
     }
     
-    private func loadModel() {
+    private func loadModel() -> SpamClassifier? {
         // Initialize the CoreML model
-        // Note: SpamClassifier is the auto-generated class from the .mlmodel file
         do {
             let config = MLModelConfiguration()
-            self.model = try SpamClassifier(configuration: config)
+            return try SpamClassifier(configuration: config)
         } catch {
             print("Failed to load CoreML model: \(error)")
+            return nil
         }
     }
     
@@ -160,6 +160,11 @@ class FilterEngine {
     private func isGambling(body: String) -> Bool {
         let lowerBody = body.lowercased()
         let keywords = [
+            // User Reported Keywords
+            "cassinox", "kazan365", "sheratonbet", "vayda", "vaysms", "salla kazan",
+            "çevrim şartı", "cevrim sarti", "havale", "iade", "çark", "cark",
+            "global site", "rtp",
+        
             // Turkish Keywords
             "bahis", "casino", "bet", "bonus", "freespin", "free spin",
             "çevrimsiz", "yatırım", "deneme bonusu", "slot", "rulet",
