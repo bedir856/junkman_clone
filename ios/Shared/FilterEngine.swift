@@ -61,14 +61,14 @@ class FilterEngine {
         
         if isBlacklisted(sender: sender, body: body) {
             DataManager.shared.spamBlocked += 1
-            return .junk // Or .filter
+            return .junk
         }
         
         // 2. Check Gambling/Betting Keywords
         if DataManager.shared.isGamblingFilterEnabled {
             if isGambling(body: body) {
                 DataManager.shared.spamBlocked += 1
-                return .filter // or .junk
+                return .junk
             }
         }
         
@@ -79,7 +79,7 @@ class FilterEngine {
             switch prediction {
             case .junk:
                 DataManager.shared.spamBlocked += 1
-                return .filter // or .junk
+                return .junk
             case .allow:
                 return .allow // or .none
             default:
@@ -163,7 +163,7 @@ class FilterEngine {
             // User Reported Keywords
             "cassinox", "kazan365", "sheratonbet", "vayda", "vaysms", "salla kazan",
             "çevrim şartı", "cevrim sarti", "havale", "iade", "çark", "cark",
-            "global site", "rtp",
+            "global site", "rtp", "casinoroys", "roys",
         
             // Turkish Keywords
             "bahis", "casino", "bet", "bonus", "freespin", "free spin",
