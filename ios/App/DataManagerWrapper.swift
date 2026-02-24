@@ -27,4 +27,9 @@ class DataManagerWrapper: ObservableObject {
         self.blacklistedWords = DataManager.shared.blacklistedWords
         self.whitelistedWords = DataManager.shared.whitelistedWords
     }
+    
+    func refreshStats() {
+        self.totalScanned = DataManager.shared.totalScanned
+        self.spamBlocked = DataManager.shared.spamBlocked
+    }
 }

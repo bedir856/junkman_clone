@@ -87,7 +87,7 @@ struct DashboardView: View {
                 }
                 
                 // Section 5: Stats (Mini)
-                Section(header: Text("İstatistikler")) {
+                Section(header: Text("İstatistikler"), footer: Text("Not: Geliştirici hesabı kısıtlamaları (App Groups) nedeniyle arka plan filtre verileri anlık senkronize edilemeyebilir.")) {
                     HStack {
                         VStack {
                             Text("\(dataManager.totalScanned)")
@@ -116,6 +116,9 @@ struct DashboardView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("SpamÖnleyici")
+            .onAppear {
+                dataManager.refreshStats()
+            }
         }
     }
 }

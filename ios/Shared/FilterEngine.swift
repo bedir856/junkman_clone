@@ -121,11 +121,20 @@ class FilterEngine {
     
     // MARK: - Rules
     
+    private func cleanText(_ text: String) -> String {
+        let invisibleChars: Set<Character> = ["\u{200B}", "\u{200C}", "\u{200D}", "\u{FEFF}", "\u{00AD}", "\u{2060}"]
+        let filtered = String(text.filter { !invisibleChars.contains($0) })
+        return filtered.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+    }
+
     private func isWhitelisted(sender: String, body: String) -> Bool {
         let dm = DataManager.shared
         if dm.whitelistedSenders.contains(sender) { return true }
+        
+        let cleanBody = cleanText(body.lowercased())
         for word in dm.whitelistedWords {
-            if body.contains(word) { return true }
+            let cleanWord = word.lowercased()
+            if cleanBody.contains(cleanWord) { return true }
         }
         return false
     }
@@ -133,28 +142,34 @@ class FilterEngine {
     private func isBlacklisted(sender: String, body: String) -> Bool {
         let dm = DataManager.shared
         if dm.blacklistedSenders.contains(sender) { return true }
+        
+        let cleanBody = cleanText(body.lowercased())
         for word in dm.blacklistedWords {
-            if body.contains(word) { return true }
+            let cleanWord = word.lowercased()
+            if cleanBody.contains(cleanWord) { return true }
         }
         return false
     }
     
     private func isGambling(body: String) -> Bool {
-        let lowerBody = body.lowercased()
+        let cleanBody = cleanText(body)
+        let foldedBody = cleanBody.folding(options: .diacriticInsensitive, locale: .current).lowercased()
+        
+        // Diacritic-free keywords
         let keywords = [
             // User Reported Keywords
             "cassinox", "kazan365", "sheratonbet", "vayda", "vaysms", "salla kazan",
-            "çevrim şartı", "cevrim sarti", "havale", "iade", "çark", "cark",
-            "global site", "rtp", "casinoroys", "roys",
+            "cevrim sarti", "havale", "iade", "cark", "global site", "rtp",
+            "casinoroys", "roys",
         
             // Turkish Keywords
             "bahis", "casino", "bet", "bonus", "freespin", "free spin",
-            "çevrimsiz", "yatırım", "deneme bonusu", "slot", "rulet",
-            "poker", "iddaa", "kazanç", "şans", "jackpot", "betting",
-            "kumar", "canlı bahis", "kaçak bahis", "bedava", "yüksek oran",
-            "hoşgeldin bonusu", "şartsız", "katla", "tıkla", "hemen üye ol",
-            "giriş yap", "promosyon", " discount", "aviator", "sweet bonanza",
-            "gates of olympus", "yasal bahis", "güvenilir bahis",
+            "cevrimsiz", "yatirim", "deneme bonusu", "slot", "rulet",
+            "poker", "iddaa", "kazanc", "sans", "jackpot", "betting",
+            "kumar", "canli bahis", "kacak bahis", "bedava", "yuksek oran",
+            "hosgeldin bonusu", "sartsiz", "katla", "tikla", "hemen uye ol",
+            "giris yap", "promosyon", " discount", "aviator", "sweet bonanza",
+            "gates of olympus", "yasal bahis", "guvenilir bahis",
             
             // Site names (Common fragments)
             "betgaranti", "vaycasino", "holiganbet", "jojobet", "betturkey",
@@ -166,7 +181,7 @@ class FilterEngine {
         ]
         
         for k in keywords {
-            if lowerBody.contains(k) { return true }
+            if foldedBody.contains(k) { return true }
         }
         return false
     }
