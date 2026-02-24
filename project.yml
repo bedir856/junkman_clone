@@ -71,3 +71,13 @@ targets:
         NSExtension:
           NSExtensionPointIdentifier: "com.apple.identitylookup.message-filter"
           NSExtensionPrincipalClass: "MessageFilterExtension"
+
+  SpamOnleyiciTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: ios/Tests
+    dependencies:
+      - target: SpamOnleyici
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: "com.yourcompany.spamonleyici.tests"
