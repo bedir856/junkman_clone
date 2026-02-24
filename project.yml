@@ -17,7 +17,6 @@ targets:
       - path: ios/App/DataManagerWrapper.swift
       - path: ios/Shared
       - path: ml/SpamClassifier.mlmodel
-      - path: ml/vocab.json
     entitlements:
       path: ios/App/SpamOnleyici.entitlements
       properties:
@@ -51,7 +50,6 @@ targets:
       - path: ios/Extension
       - path: ios/Shared
       - path: ml/SpamClassifier.mlmodel
-      - path: ml/vocab.json
     entitlements:
       path: ios/Extension/MessageFilterExtension.entitlements
       properties:

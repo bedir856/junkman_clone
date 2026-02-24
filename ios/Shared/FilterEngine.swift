@@ -12,30 +12,15 @@ enum FilterAction {
 class FilterEngine {
     static let shared = FilterEngine()
     
-    // Lazy load vocab and model to prevent cold-start timeout
-    private lazy var vocab: [String: Int] = loadVocab()
+    // Lazy load model to prevent cold-start timeout
+    // We now use staticVocab natively compiled, no JSON required
     private lazy var model: SpamClassifier? = loadModel()
     
     private init() {}
     
     // MARK: - Initialization
     
-    private func loadVocab() -> [String: Int] {
-        // Load vocab.json from bundle
-        guard let url = Bundle.main.url(forResource: "vocab", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let list = try? JSONDecoder().decode([String].self, from: data) else {
-            print("Failed to load vocab.json")
-            return [:]
-        }
-        
-        // Create a fast lookup map
-        var v: [String: Int] = [:]
-        for (index, word) in list.enumerated() {
-            v[word] = index
-        }
-        return v
-    }
+
     
     private func loadModel() -> SpamClassifier? {
         // Initialize the CoreML model
@@ -114,23 +99,20 @@ class FilterEngine {
     
     private func textToVector(_ text: String) throws -> MLMultiArray {
         // Create a MultiArray of size 4000 (must match Python training)
-        let vector = try MLMultiArray(shape: [4000], dataType: .double)
+        let count = 4000
+        let vector = try MLMultiArray(shape: [count] as [NSNumber], dataType: .double)
         
-        // Initialize to 0
-        for i in 0..<vector.count {
-            vector[i] = 0
-        }
+        // Direct memory access for millisecond-level initialization and filling
+        let pointer = vector.dataPointer.bindMemory(to: Double.self, capacity: count)
+        pointer.initialize(repeating: 0.0, count: count)
         
         // Simple Tokenization (split by whitespace, lowercase, remove punctuation)
         let words = text.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted)
         
         for word in words {
-            if let index = vocab[word] {
-                // Determine if we are just setting to 1 (Binary) or counting
-                // LogisticRegression expected counts? CountVectorizer produces counts.
-                // So we should increment.
-                let currentVal = vector[index].doubleValue
-                vector[index] = NSNumber(value: currentVal + 1.0)
+            if let index = staticVocab[word] {
+                // Increment counts directly in memory
+                pointer[index] += 1.0
             }
         }
         
@@ -191,7 +173,7 @@ class FilterEngine {
     // MARK: - Debug
     
     var debugVocabSize: Int {
-        return vocab.count
+        return staticVocab.count
     }
     
     var debugModelStatus: String {

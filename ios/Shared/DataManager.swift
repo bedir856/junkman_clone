@@ -10,6 +10,14 @@ class DataManager {
     private let suiteName = "group.com.yourcompany.junkman"
     private let defaults: UserDefaults
     
+    // In-memory cache for extension fast read
+    private var _isAiEnabled: Bool?
+    private var _isGamblingFilterEnabled: Bool?
+    private var _blacklistedWords: [String]?
+    private var _whitelistedWords: [String]?
+    private var _blacklistedSenders: [String]?
+    private var _whitelistedSenders: [String]?
+    
     private init() {
         // Fallback to standard if suite is not available (dev mode)
         self.defaults = UserDefaults(suiteName: suiteName) ?? UserDefaults.standard
@@ -18,13 +26,29 @@ class DataManager {
     // MARK: - Settings
     
     var isAiEnabled: Bool {
-        get { defaults.object(forKey: "isAiEnabled") as? Bool ?? true }
-        set { defaults.set(newValue, forKey: "isAiEnabled") }
+        get {
+            if let cached = _isAiEnabled { return cached }
+            let val = defaults.object(forKey: "isAiEnabled") as? Bool ?? true
+            _isAiEnabled = val
+            return val
+        }
+        set {
+            _isAiEnabled = newValue
+            defaults.set(newValue, forKey: "isAiEnabled")
+        }
     }
     
     var isGamblingFilterEnabled: Bool {
-        get { defaults.object(forKey: "isGamblingFilterEnabled") as? Bool ?? true }
-        set { defaults.set(newValue, forKey: "isGamblingFilterEnabled") }
+        get {
+            if let cached = _isGamblingFilterEnabled { return cached }
+            let val = defaults.object(forKey: "isGamblingFilterEnabled") as? Bool ?? true
+            _isGamblingFilterEnabled = val
+            return val
+        }
+        set {
+            _isGamblingFilterEnabled = newValue
+            defaults.set(newValue, forKey: "isGamblingFilterEnabled")
+        }
     }
     
     // MARK: - Stats
@@ -42,23 +66,55 @@ class DataManager {
     // MARK: - Lists
     
     var blacklistedWords: [String] {
-        get { defaults.stringArray(forKey: "blacklistedWords") ?? [] }
-        set { defaults.set(newValue, forKey: "blacklistedWords") }
+        get {
+            if let cached = _blacklistedWords { return cached }
+            let val = defaults.stringArray(forKey: "blacklistedWords") ?? []
+            _blacklistedWords = val
+            return val
+        }
+        set {
+            _blacklistedWords = newValue
+            defaults.set(newValue, forKey: "blacklistedWords")
+        }
     }
     
     var whitelistedWords: [String] {
-        get { defaults.stringArray(forKey: "whitelistedWords") ?? [] }
-        set { defaults.set(newValue, forKey: "whitelistedWords") }
+        get {
+            if let cached = _whitelistedWords { return cached }
+            let val = defaults.stringArray(forKey: "whitelistedWords") ?? []
+            _whitelistedWords = val
+            return val
+        }
+        set {
+            _whitelistedWords = newValue
+            defaults.set(newValue, forKey: "whitelistedWords")
+        }
     }
     
     var blacklistedSenders: [String] {
-        get { defaults.stringArray(forKey: "blacklistedSenders") ?? [] }
-        set { defaults.set(newValue, forKey: "blacklistedSenders") }
+        get {
+            if let cached = _blacklistedSenders { return cached }
+            let val = defaults.stringArray(forKey: "blacklistedSenders") ?? []
+            _blacklistedSenders = val
+            return val
+        }
+        set {
+            _blacklistedSenders = newValue
+            defaults.set(newValue, forKey: "blacklistedSenders")
+        }
     }
     
     var whitelistedSenders: [String] {
-        get { defaults.stringArray(forKey: "whitelistedSenders") ?? [] }
-        set { defaults.set(newValue, forKey: "whitelistedSenders") }
+        get {
+            if let cached = _whitelistedSenders { return cached }
+            let val = defaults.stringArray(forKey: "whitelistedSenders") ?? []
+            _whitelistedSenders = val
+            return val
+        }
+        set {
+            _whitelistedSenders = newValue
+            defaults.set(newValue, forKey: "whitelistedSenders")
+        }
     }
     
     // MARK: - Helpers
